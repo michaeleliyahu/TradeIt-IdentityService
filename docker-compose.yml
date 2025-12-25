@@ -1,0 +1,80 @@
+
+services:
+  identity-service:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    # Comments in English: Start the application with hot-reload enabled
+    command: python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - WATCHPACK_POLLING=true
+      # This points to the service name 'db' below
+      - DATABASE_URL=postgresql+asyncpg://user:password@db:5432/identity_db
+    depends_on:
+      db:
+        condition: service_healthy # Wait for DB to be fully ready before starting app
+
+  db:
+    image: postgres:15-alpine # Alpine is smaller and faster
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=identity_db
+    ports:
+      - "5433:5432" # This is your "Window" from pgAdmin to the DB
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persistence: data stays even if container is deleted
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d identity_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data: # Define the volume for data persistence
+
+
+# version: '3.9'
+
+# services:
+#   postgres:
+#     image: postgres:16-alpine
+#     container_name: identity-postgres
+#     environment:
+#       POSTGRES_USER: identity_user
+#       POSTGRES_PASSWORD: identity_password
+#       POSTGRES_DB: identity_db
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - identity_postgres_data:/var/lib/postgresql/data
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U identity_user"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+
+#   identity-service:
+#     build: .
+#     container_name: identity-service
+#     environment:
+#       DATABASE_URL: postgresql://identity_user:identity_password@postgres:5432/identity_db
+#       JWT_SECRET_KEY: ${JWT_SECRET_KEY:-your-secret-key-change-in-production}
+#       DEBUG: ${DEBUG:-False}
+#     ports:
+#       - "8000:8000"
+#     depends_on:
+#       postgres:
+#         condition: service_healthy
+#     volumes:
+#       - .:/app
+#     command: >
+#       sh -c "
+#       alembic upgrade head &&
+#       python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+#       "
+
+# volumes:
+#   identity_postgres_data:
