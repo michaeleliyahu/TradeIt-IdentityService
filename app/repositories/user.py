@@ -44,13 +44,6 @@ class UserRepository:
         )
         return result.scalars().first()
 
-    async def get_user_by_id(self, user_id: int) -> Optional[User]:
-        """Retrieve user by ID."""
-        result = await self.session.execute(
-            select(User).where(User.id == user_id)
-        )
-        return result.scalars().first()
-
     async def user_exists_by_email(self, email: str) -> bool:
         """Check if user exists by email."""
         result = await self.session.execute(
