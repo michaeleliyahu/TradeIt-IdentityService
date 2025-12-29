@@ -1,6 +1,6 @@
 """User service containing business logic."""
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.repositories.user import UserRepository
+from app.repositories.usreRepository import UserRepository
 from app.core.security import PasswordUtil, TokenUtil
 from app.schemas.user import UserRegisterRequest, UserLoginRequest, TokenResponse
 from app.models.user import User
