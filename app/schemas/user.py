@@ -55,7 +55,7 @@ class TokenResponse(BaseModel):
 
 class UserResponse(BaseModel):
     """Response schema for user details."""
-    id: int = Field(..., description="User ID")
+    id: UUID = Field(..., description="User ID")
     email: str = Field(..., description="User email")
     username: str = Field(..., description="Username")
     is_active: bool = Field(..., description="User active status")

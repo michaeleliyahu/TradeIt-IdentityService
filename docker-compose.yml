@@ -12,6 +12,8 @@ services:
       - WATCHPACK_POLLING=true
       # This points to the service name 'db' below
       - DATABASE_URL=postgresql+asyncpg://user:password@db:5432/identity_db
+      - JWT_SECRET_KEY=super-secret-jwt-key-change-in-production-123
+      - JWT_ALGORITHM=HS256
     depends_on:
       db:
         condition: service_healthy # Wait for DB to be fully ready before starting app

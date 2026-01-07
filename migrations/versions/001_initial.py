@@ -19,7 +19,7 @@ depends_on = None
 def upgrade() -> None:
     op.create_table(
         'users',
-        sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False, server_default=sa.text('gen_random_uuid()')),
         sa.Column('email', sa.String(255), nullable=False),
         sa.Column('username', sa.String(100), nullable=False),
         sa.Column('hashed_password', sa.String(255), nullable=False),
