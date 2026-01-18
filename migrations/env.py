@@ -13,10 +13,14 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # set sqlalchemy.url from environment variable
-config.set_main_option(
-    "sqlalchemy.url",
-    settings.database_url.replace("postgresql://", "postgresql+psycopg2://")
-)
+# Convert async driver to sync driver for migrations
+database_url = settings.database_url
+if "postgresql+asyncpg://" in database_url:
+    database_url = database_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://")
+elif "postgresql://" in database_url:
+    database_url = database_url.replace("postgresql://", "postgresql+psycopg2://")
+
+config.set_main_option("sqlalchemy.url", database_url)
 
 target_metadata = Base.metadata
 
