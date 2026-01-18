@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # Database Configuration
-    database_url: str = "postgresql://user:password@localhost:5432/identity_db"
+    database_url: str = "postgresql://user:password@db:5432/identity_db"
     
     # JWT Configuration
     # Using HS256 with a symmetric secret key by default.
